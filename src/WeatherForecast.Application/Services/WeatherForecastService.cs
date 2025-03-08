@@ -16,7 +16,7 @@ namespace WeatherForecast.Application.Services
         {
             try
             {
-                var result = Enumerable.Range(1, 5).Select(index => new WeatherForecasts
+                var result = Enumerable.Range(1, 100000).Select(index => new WeatherForecasts
                 {
                     Date = DateTime.Now.AddDays(index),
                     TemperatureC = Random.Shared.Next(-20, 55),

@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WeatherForecast.Api.Middleware;
@@ -10,6 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// Add Gzip compression middleware
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;  // สามารถเปิดใช้การบีบอัดสำหรับ HTTPS
+    options.Providers.Add<GzipCompressionProvider>();  // ใช้ Gzip
+    options.Providers.Add<BrotliCompressionProvider>();  // Brotli (optional)
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,6 +49,9 @@ builder.Services.AddApiVersioning().AddApiExplorer(options =>
 builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
+
+// Use compression middleware
+app.UseResponseCompression();
 
 // Add the middleware to the pipeline
 app.UseMiddleware<CustomMiddleware>();
