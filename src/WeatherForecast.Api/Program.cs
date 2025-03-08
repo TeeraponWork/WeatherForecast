@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using WeatherForecast.Api.Middleware;
 using WeatherForecast.Api.Swagger;
 using WeatherForecast.Application.Extensions;
 
@@ -38,6 +39,9 @@ builder.Services.AddApiVersioning().AddApiExplorer(options =>
 builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
+
+// Add the middleware to the pipeline
+app.UseMiddleware<CustomMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
