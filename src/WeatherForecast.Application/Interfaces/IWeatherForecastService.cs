@@ -1,8 +1,9 @@
-﻿using WeatherForecast.Domain.Entities;
+﻿using WeatherForecast.Application.Core.Results;
+using WeatherForecast.Domain.Entities;
 namespace WeatherForecast.Application.Interfaces
 {
     public interface IWeatherForecastService
     {
-        List<WeatherForecasts> GetWeatherForecasts();
+        Task<Result<List<WeatherForecasts>>> GetWeatherForecasts();
     }
 }

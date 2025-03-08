@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using WeatherForecast.Api.Controllers.BaseController;
 using WeatherForecast.Application.Interfaces;
 
 namespace WeatherForecast.Api.Controllers;
@@ -7,7 +8,7 @@ namespace WeatherForecast.Api.Controllers;
 [ApiController]
 [Route("v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
-public class WeatherForecastController : ControllerBase
+public class WeatherForecastController : ApiBaseController
 {
     private readonly IWeatherForecastService _weatherForecastService;
 
@@ -17,9 +18,9 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public IActionResult Get(){
-        var forecasts = _weatherForecastService.GetWeatherForecasts();
-        return Ok(forecasts);
+    public async Task<IActionResult> Get(){
+        var forecasts = await _weatherForecastService.GetWeatherForecasts();
+        return HandleResponse(forecasts);
     }
 
     [HttpPost(Name = "GetWeatherForecast")]
@@ -27,6 +28,6 @@ public class WeatherForecastController : ControllerBase
     public IActionResult Post()
     {
         var forecasts = _weatherForecastService.GetWeatherForecasts();
-        return Ok(forecasts);
+        return HandleResponse(forecasts);
     }
 }
