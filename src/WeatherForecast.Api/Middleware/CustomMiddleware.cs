@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using WeatherForecast.Application.Core.Exception;
+using WeatherForecast.Application.Core.Exceptions;
 
 namespace WeatherForecast.Api.Middleware
 {

@@ -1,6 +1,8 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using WeatherForecast.Api.Controllers.BaseController;
+using WeatherForecast.Application.Core.Pagination;
+using WeatherForecast.Application.Core.Results;
 using WeatherForecast.Application.Interfaces;
 
 namespace WeatherForecast.Api.Controllers;
@@ -18,16 +20,17 @@ public class WeatherForecastController : ApiBaseController
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public async Task<IActionResult> Get(){
-        var forecasts = await _weatherForecastService.GetWeatherForecasts();
-        return HandleResponse(forecasts);
+    public IActionResult Get([FromQuery] PaginationParams paginationParams)
+    {
+        var forecasts = _weatherForecastService.GetWeatherForecasts(paginationParams);
+        return Ok(forecasts);
     }
 
-    [HttpPost(Name = "GetWeatherForecast")]
-    [ApiExplorerSettings(IgnoreApi = false)] 
-    public IActionResult Post()
-    {
-        var forecasts = _weatherForecastService.GetWeatherForecasts();
-        return HandleResponse(forecasts);
-    }
+    //[HttpPost(Name = "GetWeatherForecast")]
+    //[ApiExplorerSettings(IgnoreApi = false)] 
+    //public IActionResult Post()
+    //{
+    //    var forecasts = _weatherForecastService.GetWeatherForecasts();
+    //    return HandleResponse(forecasts);
+    //}
 }

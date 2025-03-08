@@ -14,7 +14,7 @@ namespace WeatherForecast.Api.Controllers.BaseController
                 return NotFound();
             }
 
-            return Ok(value); //เปลี่ยนใช้ Result<T> . Success
+            return Ok(value);
         }
         protected IActionResult HandleErrorResponse(string errorMessage)
         {

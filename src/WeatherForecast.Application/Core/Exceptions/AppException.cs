@@ -1,4 +1,4 @@
-﻿namespace WeatherForecast.Application.Core.Exception
+﻿namespace WeatherForecast.Application.Core.Exceptions
 {
     public class AppException
     {

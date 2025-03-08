@@ -1,4 +1,6 @@
-﻿using WeatherForecast.Application.Core.Results;
+﻿using WeatherForecast.Application.Core.Exceptions;
+using WeatherForecast.Application.Core.Pagination;
+using WeatherForecast.Application.Core.Results;
 using WeatherForecast.Application.Interfaces;
 using WeatherForecast.Domain.Entities;
 
@@ -8,11 +10,11 @@ namespace WeatherForecast.Application.Services
     {
         private static readonly string[] Summaries = new[]
         {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", 
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild",
             "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        public async Task<Result<List<WeatherForecasts>>> GetWeatherForecasts()
+        public Result<List<WeatherForecasts>> GetWeatherForecasts(PaginationParams paginationParams)
         {
             try
             {
@@ -21,14 +23,15 @@ namespace WeatherForecast.Application.Services
                     Date = DateTime.Now.AddDays(index),
                     TemperatureC = Random.Shared.Next(-20, 55),
                     Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-                }).ToList();
+                }).AsQueryable();
 
-                return Result<List<WeatherForecasts>>.Success(result.ToList());
+                var pagedResult = result.ToPagedList(paginationParams.PageNumber, paginationParams.PageSize);
+                return Result<List<WeatherForecasts>>.Success(pagedResult.Items, pagedResult.Pagination);
             }
             catch (Exception ex)
             {
                 return Result<List<WeatherForecasts>>.Failure(ex.Message);
-            }          
+            }
         }
     }
 }
