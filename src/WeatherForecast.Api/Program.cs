@@ -1,12 +1,40 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text;
 using WeatherForecast.Api.Middleware;
 using WeatherForecast.Api.Swagger;
 using WeatherForecast.Application.Extensions;
+using WeatherForecast.Application.Interfaces.IService;
+using WeatherForecast.Application.Services.Jwt;
+using WeatherForecast.Domain.Models.Token;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add JWT settings from appsettings.json
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+builder.Services.Configure<JwtSettings>(jwtSettings);
+
+// Register JwtService
+builder.Services.AddScoped<IJwtService, JwtService>();
+
+// Configure Authentication
+var key = Encoding.UTF8.GetBytes(jwtSettings["Secret"]);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 // Add services to the container.
 
@@ -76,6 +104,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
